@@ -15,7 +15,7 @@ local function keywords_filter(filter)
   end, all)
 end
 
----@param opts? {keywords: string[]}
+---@param opts? {keywords: string[], current_only: boolean}
 function M.todo(opts)
   opts = vim.tbl_extend("force", {
     no_esc = true,
@@ -23,6 +23,9 @@ function M.todo(opts)
   }, opts or {})
   opts.no_esc = true
   opts.search = Config.search_regex(keywords_filter(opts.keywords))
+  if opts.current_only then
+    opts.filename = vim.api.nvim_buf_get_name(0)
+  end
   return Grep.grep(opts)
 end
 
